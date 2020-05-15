@@ -1,24 +1,99 @@
 package blockchain;
 
+import java.util.Date;
+
+/**
+ * Creates a Block
+ *
+ * @author fabioanzola richardkrikler tobiasrigler
+ */
 public class Block {
+    /**
+     * Block before current Block
+     */
+    private static Block previousBlock;
 
-    Block previousBlock;
+    /**
+     * Hash Value of the previous Block
+     */
+    private final String previousHash;
 
-    long id;
+    /**
+     * id of current Block
+     */
+    private final long id;
 
-    long timestamp;
+    /**
+     * Time of the creation
+     */
+    private final long timestamp;
 
-    String hash;
+    /**
+     * Hash value of the Block
+     */
+    private final String hash;
 
-    //TODO create constructor
-    //  should include:
-    //      If block is first previousblock = null, but previous hash should be 0
-    //      Set continuous id every time a block is created
-    //      Set timestamp --> long timeStamp = new Date().getTime(); // 1539795682545 represents 17.10.2018, 20:01:22.545
-    //      Create hash of block with sha256
+    /**
+     * Constructor for creating a Block
+     */
+    public Block() {
+        if (previousBlock == null) {
+            previousHash = "0";
+            id = 1;
+        } else {
+            previousHash = previousBlock.getHash();
+            this.id = this.getPreviousBlock().getId() + 1;
+        }
 
-    //TODO update Javadoc
+        this.timestamp = new Date().getTime();
+        if (previousBlock == null) {
+            this.hash = StringUtil.applySha256((this.timestamp + id) + previousHash);
+        } else {
+            this.hash = StringUtil.applySha256((this.timestamp + id) + previousBlock.getHash());
+        }
+        previousBlock = this;
+    }
 
-    //TODO toString Method
+    /**
+     * get the Hash value
+     *
+     * @return Hash value
+     */
+    public String getHash() {
+        return hash;
+    }
+
+    /**
+     * get the previous Block
+     *
+     * @return previous Block
+     */
+    public Block getPreviousBlock() {
+        return previousBlock;
+    }
+
+    /**
+     * get the current Id
+     *
+     * @return id
+     */
+    public long getId() {
+        return this.id;
+    }
+
+    /**
+     * Create formatted output String
+     * @return output String
+     */
+    @Override
+    public String toString() {
+        String s = "Block:\n";
+        s += "Id: " + id + "\n";
+        s += "Timestamp: " + this.timestamp + "\n";
+        s += "Hash of the previous block: \n" + previousHash + "\n";
+        s += "Hash of the block: \n" + this.hash + "\n\n";
+
+        return s;
+    }
 
 }
