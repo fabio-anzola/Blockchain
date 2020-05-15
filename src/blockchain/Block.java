@@ -9,19 +9,14 @@ import java.util.Date;
  */
 public class Block {
     /**
-     * Block before current Block
-     */
-    private static Block previousBlock;
-
-    /**
      * Hash Value of the previous Block
      */
-    private final String previousHash;
+    private static String previousHash;
 
     /**
      * id of current Block
      */
-    private final long id;
+    private static long id;
 
     /**
      * Time of the creation
@@ -31,27 +26,21 @@ public class Block {
     /**
      * Hash value of the Block
      */
-    private final String hash;
+    private static String hash;
 
     /**
      * Constructor for creating a Block
      */
     public Block() {
-        if (previousBlock == null) {
+        if (previousHash == null) {
             previousHash = "0";
             id = 1;
         } else {
-            previousHash = previousBlock.getHash();
-            this.id = this.getPreviousBlock().getId() + 1;
+            previousHash = hash;
+            id++;
         }
-
         this.timestamp = new Date().getTime();
-        if (previousBlock == null) {
-            this.hash = StringUtil.applySha256((this.timestamp + id) + previousHash);
-        } else {
-            this.hash = StringUtil.applySha256((this.timestamp + id) + previousBlock.getHash());
-        }
-        previousBlock = this;
+        hash = StringUtil.applySha256((this.timestamp + id) + previousHash);
     }
 
     /**
@@ -64,12 +53,12 @@ public class Block {
     }
 
     /**
-     * get the previous Block
+     * get the previous hash value
      *
-     * @return previous Block
+     * @return previous hash value
      */
-    public Block getPreviousBlock() {
-        return previousBlock;
+    public String getPreviousHash() {
+        return previousHash;
     }
 
     /**
@@ -78,11 +67,12 @@ public class Block {
      * @return id
      */
     public long getId() {
-        return this.id;
+        return id;
     }
 
     /**
      * Create formatted output String
+     *
      * @return output String
      */
     @Override
@@ -91,7 +81,7 @@ public class Block {
         s += "Id: " + id + "\n";
         s += "Timestamp: " + this.timestamp + "\n";
         s += "Hash of the previous block: \n" + previousHash + "\n";
-        s += "Hash of the block: \n" + this.hash + "\n\n";
+        s += "Hash of the block: \n" + hash + "\n";
 
         return s;
     }
