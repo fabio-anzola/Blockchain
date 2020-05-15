@@ -31,25 +31,14 @@ public class Blockchain {
      * @param nrOfBlocks The number of Blocks which should be added
      */
     private void appendChain(long nrOfBlocks) {
-        for (int i = 0; i < nrOfBlocks; i++) {
-            appendChain();
+        int size = this.chain.size();
+        for (int i = size; i < size + nrOfBlocks; i++) {
+            if (i == 0) {
+                this.chain.add(new Block(null));
+            } else {
+                this.chain.add(new Block(this.chain.get(i - 1)));
+            }
         }
-    }
-
-    /**
-     * Appends a single Block to the Blockchain
-     */
-    private void appendChain() {
-        this.chain.add(generateBlock());
-    }
-
-    /**
-     * Generates a new Block
-     *
-     * @return A new Block
-     */
-    public Block generateBlock() {
-        return new Block();
     }
 
     /**
@@ -72,9 +61,9 @@ public class Blockchain {
      * @return If the Blockchain is valid
      */
     public boolean validate() {
+        Block previousBlock = null;
         for (int i = 0; i < this.chain.size(); i++) {
             Block currentBlock = this.chain.get(i);
-            Block previousBlock = null;
             if (i == 0) {
                 if (!currentBlock.getPreviousHash().equals("0")) {
                     return false;

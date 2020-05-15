@@ -8,39 +8,40 @@ import java.util.Date;
  * @author fabioanzola richardkrikler tobiasrigler
  */
 public class Block {
-    /**
-     * Hash Value of the previous Block
-     */
-    private static String previousHash;
+
+    private Block previousBlock;
+    private String previousHash;
 
     /**
      * id of current Block
      */
-    private static long id;
+    private long id;
 
     /**
      * Time of the creation
      */
-    private final long timestamp;
+    private long timestamp;
 
     /**
      * Hash value of the Block
      */
-    private static String hash;
+    private String hash;
 
     /**
      * Constructor for creating a Block
      */
-    public Block() {
-        if (previousHash == null) {
-            previousHash = "0";
-            id = 1;
-        } else {
-            previousHash = hash;
-            id++;
-        }
+    public Block(Block previousBlock) {
         this.timestamp = new Date().getTime();
-        hash = StringUtil.applySha256((this.timestamp + id) + previousHash);
+        this.previousBlock = previousBlock;
+        if (this.previousBlock == null) {
+            this.previousHash = "0";
+            id = 1;
+            hash = StringUtil.applySha256(Long.toString(this.timestamp + id));
+        } else {
+            this.previousHash = this.previousBlock.getHash();
+            id = this.previousBlock.getId() + 1;
+            hash = StringUtil.applySha256((this.timestamp + id) + this.previousBlock.getHash());
+        }
     }
 
     /**
@@ -52,13 +53,8 @@ public class Block {
         return hash;
     }
 
-    /**
-     * get the previous hash value
-     *
-     * @return previous hash value
-     */
     public String getPreviousHash() {
-        return previousHash;
+        return this.previousHash;
     }
 
     /**
@@ -80,8 +76,8 @@ public class Block {
         String s = "Block:\n";
         s += "Id: " + id + "\n";
         s += "Timestamp: " + this.timestamp + "\n";
-        s += "Hash of the previous block: \n" + previousHash + "\n";
-        s += "Hash of the block: \n" + hash + "\n";
+        s += "Hash of the previous block: \n" + this.previousHash + "\n";
+        s += "Hash of the block: \n" + hash + "\n\n";
 
         return s;
     }
