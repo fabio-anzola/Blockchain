@@ -9,11 +9,18 @@ import java.util.Date;
  */
 public class Block {
 
+    /**
+     * Link to the previous Block
+     */
     private Block previousBlock;
+
+    /**
+     * Hash of the previous Block
+     */
     private String previousHash;
 
     /**
-     * id of current Block
+     * ID of current Block
      */
     private long id;
 
@@ -45,7 +52,7 @@ public class Block {
     }
 
     /**
-     * get the Hash value
+     * Get the Hash value
      *
      * @return Hash value
      */
@@ -58,7 +65,7 @@ public class Block {
     }
 
     /**
-     * get the current Id
+     * Get the current Id
      *
      * @return id
      */

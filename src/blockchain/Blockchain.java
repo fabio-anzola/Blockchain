@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * The Blockchain class
  *
- * @author fabioanzola
+ * @author fabioanzola richardkrikler tobiasrigler
  */
 public class Blockchain {
 
@@ -42,7 +42,7 @@ public class Blockchain {
     }
 
     /**
-     * Shows Information about all the Blocks
+     * Shows information about all the Blocks
      *
      * @return The Output of all Blocks
      */
