@@ -11,6 +11,16 @@ import java.util.Random;
 public class Block {
 
     /**
+     * Time for creation
+     */
+    private long generatingTime;
+
+    /**
+     * The magic number for the hash
+     */
+    private long magicNumber;
+
+    /**
      * Link to the previous Block
      */
     private final Block previousBlock;
@@ -39,6 +49,7 @@ public class Block {
      * Constructor for creating a Block
      */
     public Block(Block previousBlock) {
+        long startTime = System.currentTimeMillis();
         this.timestamp = new Date().getTime();
         this.previousBlock = previousBlock;
         if (this.previousBlock == null) {
@@ -50,6 +61,7 @@ public class Block {
             id = this.previousBlock.getId() + 1;
             hash = StringUtil.applySha256((this.timestamp + id) + this.previousBlock.getHash());
         }
+        this.generatingTime = (System.currentTimeMillis() - startTime) / 1000;
     }
 
 
@@ -57,6 +69,7 @@ public class Block {
      * Constructor for creating a Block with specified Number of zeros
      */
     public Block(Block previousBlock, int requiredZeros) {
+        long startTime = System.currentTimeMillis();
         this.timestamp = new Date().getTime();
         this.previousBlock = previousBlock;
         if (this.previousBlock == null) {
@@ -67,6 +80,7 @@ public class Block {
             id = this.previousBlock.getId() + 1;
         }
         calculateHash(requiredZeros);
+        this.generatingTime = (System.currentTimeMillis() - startTime) / 1000L;
     }
 
     /**
@@ -81,6 +95,7 @@ public class Block {
             magicNumber = new Random().nextLong();
             hash = StringUtil.applySha256(Long.toString(this.timestamp + id + magicNumber));
         }
+        this.magicNumber = magicNumber;
     }
 
     /**
@@ -112,14 +127,13 @@ public class Block {
      */
     @Override
     public String toString() {
-        //TODO add information on for how long the Block generated
-        //TODO output magic number
         String s = "Block:\n";
         s += "Id: " + id + "\n";
         s += "Timestamp: " + this.timestamp + "\n";
+        s += "Magic number: " + this.magicNumber + "\n";
         s += "Hash of the previous block: \n" + this.previousHash + "\n";
-        s += "Hash of the block: \n" + hash + "\n\n";
-
+        s += "Hash of the block: \n" + hash + "\n";
+        s += "Block was generating for " + this.generatingTime + " seconds" + "\n\n";
         return s;
     }
 
