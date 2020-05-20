@@ -1,6 +1,7 @@
 package blockchain;
 
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Creates a Block
@@ -12,22 +13,22 @@ public class Block {
     /**
      * Link to the previous Block
      */
-    private Block previousBlock;
+    private final Block previousBlock;
 
     /**
      * Hash of the previous Block
      */
-    private String previousHash;
+    private final String previousHash;
 
     /**
      * ID of current Block
      */
-    private long id;
+    private final long id;
 
     /**
      * Time of the creation
      */
-    private long timestamp;
+    private final long timestamp;
 
     /**
      * Hash value of the Block
@@ -48,6 +49,37 @@ public class Block {
             this.previousHash = this.previousBlock.getHash();
             id = this.previousBlock.getId() + 1;
             hash = StringUtil.applySha256((this.timestamp + id) + this.previousBlock.getHash());
+        }
+    }
+
+
+    /**
+     * Constructor for creating a Block with specified Number of zeros
+     */
+    public Block(Block previousBlock, int requiredZeros) {
+        this.timestamp = new Date().getTime();
+        this.previousBlock = previousBlock;
+        if (this.previousBlock == null) {
+            this.previousHash = "0";
+            id = 1;
+        } else {
+            this.previousHash = this.previousBlock.getHash();
+            id = this.previousBlock.getId() + 1;
+        }
+        calculateHash(requiredZeros);
+    }
+
+    /**
+     * Calculates the Hash for the current Block
+     *
+     * @param requiredZeros Nr. of zeros for the hash
+     */
+    private void calculateHash(int requiredZeros) {
+        long magicNumber = new Random().nextLong();
+        hash = StringUtil.applySha256(Long.toString(this.timestamp + id + magicNumber));
+        while (!(hash.substring(0, requiredZeros).replaceAll("0", "").isBlank())) {
+            magicNumber = new Random().nextLong();
+            hash = StringUtil.applySha256(Long.toString(this.timestamp + id + magicNumber));
         }
     }
 
@@ -80,6 +112,8 @@ public class Block {
      */
     @Override
     public String toString() {
+        //TODO add information on for how long the Block generated
+        //TODO output magic number
         String s = "Block:\n";
         s += "Id: " + id + "\n";
         s += "Timestamp: " + this.timestamp + "\n";

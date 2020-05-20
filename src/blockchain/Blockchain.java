@@ -10,6 +10,13 @@ import java.util.List;
  */
 public class Blockchain {
 
+    //TODO implement serialization
+
+    /**
+     * The number of zeros at the beginning of the hash
+     */
+    int requiredZeros;
+
     /**
      * Stores all of the Blocks from the Blockchain
      */
@@ -22,6 +29,18 @@ public class Blockchain {
      */
     public Blockchain(long numberOfBlocks) {
         this.chain = new ArrayList<>();
+        this.requiredZeros = 0;
+        appendChain(numberOfBlocks);
+    }
+
+    /**
+     * Creates a Blockchain with a specified number of Blocks and specified number of zeros
+     *
+     * @param numberOfBlocks The number of Blocks which should be added to the Blockchain
+     */
+    public Blockchain(long numberOfBlocks, int requiredZeros) {
+        this.chain = new ArrayList<>();
+        this.requiredZeros = requiredZeros;
         appendChain(numberOfBlocks);
     }
 
@@ -34,9 +53,9 @@ public class Blockchain {
         int size = this.chain.size();
         for (int i = size; i < size + nrOfBlocks; i++) {
             if (i == 0) {
-                this.chain.add(new Block(null));
+                this.chain.add(new Block(null, this.requiredZeros));
             } else {
-                this.chain.add(new Block(this.chain.get(i - 1)));
+                this.chain.add(new Block(this.chain.get(i - 1), this.requiredZeros));
             }
         }
     }
