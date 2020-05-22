@@ -1,5 +1,6 @@
 package blockchain;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Random;
 
@@ -8,12 +9,12 @@ import java.util.Random;
  *
  * @author fabioanzola richardkrikler tobiasrigler
  */
-public class Block {
+public class Block implements Serializable {
 
     /**
      * Time for creation
      */
-    private long generatingTime;
+    private final long generatingTime;
 
     /**
      * The magic number for the hash
