@@ -1,11 +1,8 @@
 package blockchain;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The Blockchain class
@@ -132,17 +129,26 @@ public class Blockchain implements Serializable {
         this.chain.add(block);
     }
 
-    public void appendFromMiner(Block block) {
-        Blockchain temp = this;
-        if (temp.validate()) {
-            this.appendBlock(block);
-            System.out.println(block);
-            regulateDifficulty();
+    public synchronized void appendFromMiner(Block block) {
+        if (block.getId() != this.getLastID() && block.getId() > this.getLastID()) {
+            Blockchain temp = this;
+            if (temp.validate()) {
+                this.appendBlock(block);
+                System.out.println(block);
+                regulateDifficulty();
+            }
         }
     }
 
     public Block getLastBlock() {
         return this.chain.get(this.chain.size() - 1);
+    }
+
+    public long getLastID() {
+        if (this.chain.size() == 0) {
+            return -1L;
+        }
+        return this.chain.get(this.chain.size() - 1).getId();
     }
 
     public int getRequiredZeros() {
