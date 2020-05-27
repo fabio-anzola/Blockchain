@@ -19,7 +19,7 @@ public class Blockchain implements Serializable {
     /**
      * The number of zeros at the beginning of the hash
      */
-    volatile int requiredZeros;
+    int requiredZeros;
 
     /**
      * Stores all of the Blocks from the Blockchain
@@ -37,23 +37,6 @@ public class Blockchain implements Serializable {
         //    this.chain = ((Blockchain) Objects.requireNonNull(deserialize("resources/blockchain.file"))).chain;
         //}
         this.requiredZeros = 0;
-    }
-
-    /**
-     * Appends multiple Blocks to the Blockchain
-     *
-     * @param nrOfBlocks The number of Blocks which should be added
-     */
-    public void appendChain(long nrOfBlocks) throws Exception {
-        int size = this.chain.size();
-        for (int i = size; i < size + nrOfBlocks; i++) {
-            if (i == 0) {
-                this.chain.add(new Block(null, this.requiredZeros));
-            } else {
-                this.chain.add(new Block(this.chain.get(i - 1), this.requiredZeros));
-            }
-            //serialize(this, "resources/blockchain.file");
-        }
     }
 
     /**
@@ -125,25 +108,45 @@ public class Blockchain implements Serializable {
         return null;
     }
 
+    /**
+     * Appends a Block to a chain
+     *
+     * @param block given Block
+     */
     private void appendBlock(Block block) {
         this.chain.add(block);
     }
 
+    /**
+     * Append to a chain from a miner
+     *
+     * @param block from a miner
+     */
     public synchronized void appendFromMiner(Block block) {
         if (block.getId() != this.getLastID() && block.getId() > this.getLastID()) {
             Blockchain temp = this;
             if (temp.validate()) {
                 this.appendBlock(block);
-                System.out.println(block);
                 regulateDifficulty();
+                System.out.println(block);
             }
         }
     }
 
+    /**
+     * Get the last Block of the chain
+     *
+     * @return last Block
+     */
     public Block getLastBlock() {
         return this.chain.get(this.chain.size() - 1);
     }
 
+    /**
+     * Get the ID of the last Block
+     *
+     * @return ID
+     */
     public long getLastID() {
         if (this.chain.size() == 0) {
             return -1L;
@@ -151,20 +154,37 @@ public class Blockchain implements Serializable {
         return this.chain.get(this.chain.size() - 1).getId();
     }
 
+    /**
+     * Get the amount of required zeros
+     *
+     * @return amount of zeros
+     */
     public int getRequiredZeros() {
         return requiredZeros;
     }
 
+    /**
+     * Regulate the time of computing the next Block
+     */
     private void regulateDifficulty() {
         if (getLastBlock().getGeneratingTime() > 60) {
             if (this.requiredZeros > 0) {
                 this.requiredZeros--;
+                getLastBlock().setDifficultyState("N was decreased by 1");
             }
-        } else {
+        } else if (getLastBlock().getGeneratingTime() <= 5) {
             this.requiredZeros++;
+            getLastBlock().setDifficultyState("N was increased to " + this.requiredZeros);
+        } else {
+            getLastBlock().setDifficultyState("N stays the same");
         }
     }
 
+    /**
+     * Get the size of the chain
+     *
+     * @return size of chain
+     */
     public int getSize() {
         return this.chain.size();
     }
