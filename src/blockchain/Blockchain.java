@@ -132,4 +132,9 @@ public class Blockchain implements Serializable {
         }
         return null;
     }
+
+    //TODO regulate MagicNumber based on creation speed
+
+    //TODO check the validity of an incoming block
+
 }
