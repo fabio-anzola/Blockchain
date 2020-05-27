@@ -1,11 +1,8 @@
 package blockchain;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The Blockchain class
@@ -27,38 +24,19 @@ public class Blockchain implements Serializable {
     /**
      * Stores all of the Blocks from the Blockchain
      */
-    List<Block> chain;
+    volatile List<Block> chain;
 
     /**
      * Creates a Blockchain with a specified number of Blocks and specified number of zeros
      *
-     * @param numberOfBlocks The number of Blocks which should be added to the Blockchain
      * @throws Exception If an error occurs
      */
-    public Blockchain(long numberOfBlocks, int requiredZeros) throws Exception {
+    public Blockchain() throws Exception {
         this.chain = new ArrayList<>();
         //if (Files.exists(Paths.get("resources/blockchain.file"))) {
         //    this.chain = ((Blockchain) Objects.requireNonNull(deserialize("resources/blockchain.file"))).chain;
         //}
-        this.requiredZeros = requiredZeros;
-        appendChain(numberOfBlocks);
-    }
-
-    /**
-     * Appends multiple Blocks to the Blockchain
-     *
-     * @param nrOfBlocks The number of Blocks which should be added
-     */
-    private void appendChain(long nrOfBlocks) throws Exception {
-        int size = this.chain.size();
-        for (int i = size; i < size + nrOfBlocks; i++) {
-            if (i == 0) {
-                this.chain.add(new Block(null, this.requiredZeros));
-            } else {
-                this.chain.add(new Block(this.chain.get(i - 1), this.requiredZeros));
-            }
-            //serialize(this, "resources/blockchain.file");
-        }
+        this.requiredZeros = 0;
     }
 
     /**
@@ -90,9 +68,6 @@ public class Blockchain implements Serializable {
                 }
             } else {
                 if (!currentBlock.getPreviousHash().equals(previousBlock.getHash())) {
-                    return false;
-                }
-                if (!(currentBlock.getHash().substring(0, requiredZeros).replaceAll("0", "").isBlank())) {
                     return false;
                 }
             }
@@ -131,5 +106,86 @@ public class Blockchain implements Serializable {
             return obj;
         }
         return null;
+    }
+
+    /**
+     * Appends a Block to a chain
+     *
+     * @param block given Block
+     */
+    private void appendBlock(Block block) {
+        this.chain.add(block);
+    }
+
+    /**
+     * Append to a chain from a miner
+     *
+     * @param block from a miner
+     */
+    public synchronized void appendFromMiner(Block block) {
+        if (block.getId() != this.getLastID() && block.getId() > this.getLastID()) {
+            Blockchain temp = this;
+            if (temp.validate()) {
+                this.appendBlock(block);
+                regulateDifficulty();
+                System.out.println(block);
+            }
+        }
+    }
+
+    /**
+     * Get the last Block of the chain
+     *
+     * @return last Block
+     */
+    public Block getLastBlock() {
+        return this.chain.get(this.chain.size() - 1);
+    }
+
+    /**
+     * Get the ID of the last Block
+     *
+     * @return ID
+     */
+    public long getLastID() {
+        if (this.chain.size() == 0) {
+            return -1L;
+        }
+        return this.chain.get(this.chain.size() - 1).getId();
+    }
+
+    /**
+     * Get the amount of required zeros
+     *
+     * @return amount of zeros
+     */
+    public int getRequiredZeros() {
+        return requiredZeros;
+    }
+
+    /**
+     * Regulate the time of computing the next Block
+     */
+    private void regulateDifficulty() {
+        if (getLastBlock().getGeneratingTime() > 60) {
+            if (this.requiredZeros > 0) {
+                this.requiredZeros--;
+                getLastBlock().setDifficultyState("N was decreased by 1");
+            }
+        } else if (getLastBlock().getGeneratingTime() <= 5) {
+            this.requiredZeros++;
+            getLastBlock().setDifficultyState("N was increased to " + this.requiredZeros);
+        } else {
+            getLastBlock().setDifficultyState("N stays the same");
+        }
+    }
+
+    /**
+     * Get the size of the chain
+     *
+     * @return size of chain
+     */
+    public int getSize() {
+        return this.chain.size();
     }
 }

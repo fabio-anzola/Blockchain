@@ -12,6 +12,11 @@ import java.util.Random;
 public class Block implements Serializable {
 
     /**
+     * The difficulty state
+     */
+    private String difficultyState;
+
+    /**
      * Time for creation
      */
     private final long generatingTime;
@@ -20,11 +25,6 @@ public class Block implements Serializable {
      * The magic number for the hash
      */
     private long magicNumber;
-
-    /**
-     * Link to the previous Block
-     */
-    private final Block previousBlock;
 
     /**
      * Hash of the previous Block
@@ -47,24 +47,9 @@ public class Block implements Serializable {
     private String hash;
 
     /**
-     * Constructor for creating a Block
+     * The miner ID, which created the Block
      */
-    public Block(Block previousBlock) {
-        long startTime = System.currentTimeMillis();
-        this.timestamp = new Date().getTime();
-        this.previousBlock = previousBlock;
-        if (this.previousBlock == null) {
-            this.previousHash = "0";
-            id = 1;
-            hash = StringUtil.applySha256(Long.toString(this.timestamp + id));
-        } else {
-            this.previousHash = this.previousBlock.getHash();
-            id = this.previousBlock.getId() + 1;
-            hash = StringUtil.applySha256((this.timestamp + id) + this.previousBlock.getHash());
-        }
-        this.generatingTime = (System.currentTimeMillis() - startTime) / 1000;
-    }
-
+    private long minerID;
 
     /**
      * Constructor for creating a Block with specified Number of zeros
@@ -72,13 +57,12 @@ public class Block implements Serializable {
     public Block(Block previousBlock, int requiredZeros) {
         long startTime = System.currentTimeMillis();
         this.timestamp = new Date().getTime();
-        this.previousBlock = previousBlock;
-        if (this.previousBlock == null) {
+        if (previousBlock == null) {
             this.previousHash = "0";
             id = 1;
         } else {
-            this.previousHash = this.previousBlock.getHash();
-            id = this.previousBlock.getId() + 1;
+            this.previousHash = previousBlock.getHash();
+            id = previousBlock.getId() + 1;
         }
         calculateHash(requiredZeros);
         this.generatingTime = (System.currentTimeMillis() - startTime) / 1000L;
@@ -108,6 +92,11 @@ public class Block implements Serializable {
         return hash;
     }
 
+    /**
+     * Get the previous Hash value
+     *
+     * @return hash value
+     */
     public String getPreviousHash() {
         return this.previousHash;
     }
@@ -129,13 +118,42 @@ public class Block implements Serializable {
     @Override
     public String toString() {
         String s = "Block:\n";
+        s += "Created by miner # " + this.minerID + "\n";
         s += "Id: " + id + "\n";
         s += "Timestamp: " + this.timestamp + "\n";
         s += "Magic number: " + this.magicNumber + "\n";
         s += "Hash of the previous block: \n" + this.previousHash + "\n";
         s += "Hash of the block: \n" + hash + "\n";
-        s += "Block was generating for " + this.generatingTime + " seconds" + "\n\n";
+        s += "Block was generating for " + this.generatingTime + " seconds" + "\n";
+        s += this.difficultyState + "\n";
         return s;
+    }
+
+    /**
+     * Get the time it took to generate the Block
+     *
+     * @return time in seconds
+     */
+    public long getGeneratingTime() {
+        return generatingTime;
+    }
+
+    /**
+     * Set the miner ID
+     *
+     * @param minerID for the miner
+     */
+    public void setMinerID(long minerID) {
+        this.minerID = minerID;
+    }
+
+    /**
+     * Set the difficulty state of the Block
+     *
+     * @param difficultyState of the Block
+     */
+    public void setDifficultyState(String difficultyState) {
+        this.difficultyState = difficultyState;
     }
 
 }

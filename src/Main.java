@@ -1,15 +1,11 @@
 import blockchain.Blockchain;
-
-import java.util.Scanner;
+import miner.Miner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter how many zeros the hash must starts with: ");
-        int zeros = scanner.nextInt();
-        Blockchain bc = new Blockchain(5, zeros);
-        System.out.println(bc);
-        System.out.println(bc.validate());
-        //System.out.println(bc.validate());
+       Blockchain bc = new Blockchain();
+        for (int i = 0; i < 1; i++) {
+            new Miner(bc).start();
+        }
     }
 }
