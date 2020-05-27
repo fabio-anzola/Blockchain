@@ -6,8 +6,6 @@ import blockchain.Blockchain;
 public class Miner extends Thread{
     private volatile Blockchain bc;
 
-    //TODO create Thread(s) with miner functionality
-
     //TODO update Javadoc
 
     public Miner(Blockchain bc) {
@@ -18,7 +16,19 @@ public class Miner extends Thread{
     public void run() {
         while (true) {
             try {
-                bc.appendFromMiner(new Block(bc.getLastBlock(), bc.getRequiredZeros()));
+                System.out.println(Thread.currentThread().getId());
+                if (bc.getSize() > 0) {
+                    Block temp = new Block(bc.getLastBlock(), bc.getRequiredZeros());
+                    temp.setMinerID(Thread.currentThread().getId());
+                    bc.appendFromMiner(temp);
+                    System.out.println(temp.getHash());
+                    System.out.println("Size: " + bc.getSize());
+                } else {
+                    Block temp = new Block(null, bc.getRequiredZeros());
+                    temp.setMinerID(Thread.currentThread().getId());
+                    bc.appendFromMiner(temp);
+                    System.out.println("Else");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

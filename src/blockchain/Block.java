@@ -46,6 +46,9 @@ public class Block implements Serializable {
      */
     private String hash;
 
+
+    private long minerID;
+
     /**
      * Constructor for creating a Block
      */
@@ -129,6 +132,7 @@ public class Block implements Serializable {
     @Override
     public String toString() {
         String s = "Block:\n";
+        s += "Created by miner # " + this.minerID + "\n";
         s += "Id: " + id + "\n";
         s += "Timestamp: " + this.timestamp + "\n";
         s += "Magic number: " + this.magicNumber + "\n";
@@ -138,4 +142,12 @@ public class Block implements Serializable {
         return s;
     }
 
+
+    public long getGeneratingTime() {
+        return generatingTime;
+    }
+
+    public void setMinerID(long minerID) {
+        this.minerID = minerID;
+    }
 }

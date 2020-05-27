@@ -22,12 +22,12 @@ public class Blockchain implements Serializable {
     /**
      * The number of zeros at the beginning of the hash
      */
-    int requiredZeros;
+    volatile int requiredZeros;
 
     /**
      * Stores all of the Blocks from the Blockchain
      */
-    List<Block> chain;
+    volatile List<Block> chain;
 
     /**
      * Creates a Blockchain with a specified number of Blocks and specified number of zeros
@@ -139,19 +139,32 @@ public class Blockchain implements Serializable {
         temp.appendBlock(block);
         if (temp.validate()) {
             this.appendBlock(block);
+            System.out.println(block);
+            regulateDifficulty();
         }
     }
 
     public Block getLastBlock() {
-        return this.chain.get(this.chain.size()-1);
+        return this.chain.get(this.chain.size() - 1);
     }
 
     public int getRequiredZeros() {
         return requiredZeros;
     }
 
-    //TODO regulate MagicNumber based on creation speed
+    private void regulateDifficulty() {
+        if (getLastBlock().getGeneratingTime() > 60) {
+            if (this.requiredZeros > 0) {
+                this.requiredZeros--;
+            }
+        } else {
+            this.requiredZeros++;
+        }
+    }
 
-    //TODO check the validity of an incoming block
+    public int getSize() {
+        return this.chain.size();
+    }
+
 
 }
