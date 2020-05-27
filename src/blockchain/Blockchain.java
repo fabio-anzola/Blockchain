@@ -32,16 +32,14 @@ public class Blockchain implements Serializable {
     /**
      * Creates a Blockchain with a specified number of Blocks and specified number of zeros
      *
-     * @param numberOfBlocks The number of Blocks which should be added to the Blockchain
      * @throws Exception If an error occurs
      */
-    public Blockchain(long numberOfBlocks, int requiredZeros) throws Exception {
+    public Blockchain() throws Exception {
         this.chain = new ArrayList<>();
         //if (Files.exists(Paths.get("resources/blockchain.file"))) {
         //    this.chain = ((Blockchain) Objects.requireNonNull(deserialize("resources/blockchain.file"))).chain;
         //}
-        this.requiredZeros = requiredZeros;
-        appendChain(numberOfBlocks);
+        this.requiredZeros = 0;
     }
 
     /**
@@ -136,7 +134,6 @@ public class Blockchain implements Serializable {
 
     public void appendFromMiner(Block block) {
         Blockchain temp = this;
-        temp.appendBlock(block);
         if (temp.validate()) {
             this.appendBlock(block);
             System.out.println(block);
@@ -165,6 +162,4 @@ public class Blockchain implements Serializable {
     public int getSize() {
         return this.chain.size();
     }
-
-
 }

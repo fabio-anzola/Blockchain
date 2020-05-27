@@ -138,7 +138,7 @@ public class Block implements Serializable {
         s += "Magic number: " + this.magicNumber + "\n";
         s += "Hash of the previous block: \n" + this.previousHash + "\n";
         s += "Hash of the block: \n" + hash + "\n";
-        s += "Block was generating for " + this.generatingTime + " seconds" + "\n\n";
+        s += "Block was generating for " + this.generatingTime + " seconds" + "\n";
         return s;
     }
 
