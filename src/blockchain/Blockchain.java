@@ -49,7 +49,7 @@ public class Blockchain implements Serializable {
      *
      * @param nrOfBlocks The number of Blocks which should be added
      */
-    private void appendChain(long nrOfBlocks) throws Exception {
+    public void appendChain(long nrOfBlocks) throws Exception {
         int size = this.chain.size();
         for (int i = size; i < size + nrOfBlocks; i++) {
             if (i == 0) {
@@ -92,9 +92,6 @@ public class Blockchain implements Serializable {
                 if (!currentBlock.getPreviousHash().equals(previousBlock.getHash())) {
                     return false;
                 }
-                if (!(currentBlock.getHash().substring(0, requiredZeros).replaceAll("0", "").isBlank())) {
-                    return false;
-                }
             }
             previousBlock = this.chain.get(i);
         }
@@ -131,6 +128,26 @@ public class Blockchain implements Serializable {
             return obj;
         }
         return null;
+    }
+
+    private void appendBlock(Block block) {
+        this.chain.add(block);
+    }
+
+    public void appendFromMiner(Block block) {
+        Blockchain temp = this;
+        temp.appendBlock(block);
+        if (temp.validate()) {
+            this.appendBlock(block);
+        }
+    }
+
+    public Block getLastBlock() {
+        return this.chain.get(this.chain.size()-1);
+    }
+
+    public int getRequiredZeros() {
+        return requiredZeros;
     }
 
     //TODO regulate MagicNumber based on creation speed
