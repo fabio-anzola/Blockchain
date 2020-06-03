@@ -11,6 +11,14 @@ import java.util.List;
  */
 public class Blockchain implements Serializable {
 
+    //TODO field for message cache
+
+    //TODO continually check for messages
+
+    //TODO once Block is confirmed add all messages to Block and clear cache
+
+    //TODO Javadoc
+
     /**
      * The VID for Serialization
      */

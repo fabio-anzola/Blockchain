@@ -11,6 +11,10 @@ import java.util.Random;
  */
 public class Block implements Serializable {
 
+    //TODO field for messages
+
+    //TODO Javadoc
+
     /**
      * The difficulty state
      */
