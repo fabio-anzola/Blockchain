@@ -61,7 +61,7 @@ public class Block implements Serializable {
      * Constructor for creating a Block with specified Number of zeros
      */
     public Block(Block previousBlock, int requiredZeros) {
-        this.messages = "";
+        this.messages = "\nNo transactions\n";
         long startTime = System.currentTimeMillis();
         this.timestamp = new Date().getTime();
         if (previousBlock == null) {
@@ -126,12 +126,13 @@ public class Block implements Serializable {
     public String toString() {
         String s = "Block:\n";
         s += "Created by miner # " + this.minerID + "\n";
+        s += "miner" + this.minerID + " gets 100 VC\n";
         s += "Id: " + id + "\n";
         s += "Timestamp: " + this.timestamp + "\n";
         s += "Magic number: " + this.magicNumber + "\n";
         s += "Hash of the previous block: \n" + this.previousHash + "\n";
         s += "Hash of the block: \n" + hash + "\n";
-        s += "Block data: \n";
+        s += "Block data: ";
         s += messages;
         s += "Block was generating for " + this.generatingTime + " seconds" + "\n";
         s += this.difficultyState + "\n";
@@ -169,8 +170,11 @@ public class Block implements Serializable {
      * @param messages sets messages to block
      */
     public void setMessages(ArrayList<String> messages) {
-        for (String message: messages) {
-            this.messages += message + "\n";
+        for (int i = 0; i < messages.size(); i++) {
+            if (i==0) {
+                this.messages = "\n";
+            }
+            this.messages += messages.get(i) + "\n";
         }
     }
 }

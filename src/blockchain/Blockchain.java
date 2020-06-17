@@ -133,11 +133,15 @@ public class Blockchain implements Serializable {
         if (block.getId() != this.getLastID() && block.getId() > this.getLastID()) {
             Blockchain temp = this;
             if (temp.validate()) {
-                block.setMessages(messageCache);
-                this.appendBlock(block);
-                messageCache.clear();
-                regulateDifficulty();
-                System.out.println(block);
+                if (block.getId() == (this.getLastID()+1)) {
+                    block.setMessages(messageCache);
+                    this.appendBlock(block);
+                    messageCache.clear();
+                    regulateDifficulty();
+                    System.out.println(block);
+                } else {
+                    System.out.println("error");
+                }
             }
         }
     }
@@ -158,7 +162,7 @@ public class Blockchain implements Serializable {
      */
     public long getLastID() {
         if (this.chain.size() == 0) {
-            return -1L;
+            return 0L;
         }
         return this.chain.get(this.chain.size() - 1).getId();
     }
@@ -176,12 +180,12 @@ public class Blockchain implements Serializable {
      * Regulate the time of computing the next Block
      */
     private void regulateDifficulty() {
-        if (getLastBlock().getGeneratingTime() > 60) {
+        if (getLastBlock().getGeneratingTime() > 30) {
             if (this.requiredZeros > 0) {
                 this.requiredZeros--;
                 getLastBlock().setDifficultyState("N was decreased by 1");
             }
-        } else if (getLastBlock().getGeneratingTime() <= 5) {
+        } else if (getLastBlock().getGeneratingTime() < 1 && this.requiredZeros < 4) {
             this.requiredZeros++;
             getLastBlock().setDifficultyState("N was increased to " + this.requiredZeros);
         } else {

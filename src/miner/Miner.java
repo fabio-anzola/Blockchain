@@ -16,11 +16,17 @@ public class Miner extends Thread {
     private final Blockchain bc;
 
     /**
+     * Store the amount of money of a Miner
+     */
+    private long money;
+
+    /**
      * Constructor of Miner
      *
      * @param bc current Blockchain
      */
     public Miner(Blockchain bc) {
+        this.money = 100;
         this.bc = bc;
     }
 
@@ -36,20 +42,31 @@ public class Miner extends Thread {
      */
     @Override
     public void run() {
+        System.out.print("");
         while (true) {
             try {
                 if (bc.getSize() > 0) {
                     Block temp = new Block(bc.getLastBlock(), bc.getRequiredZeros());
                     temp.setMinerID(Thread.currentThread().getId());
+                    addMoney(100);
                     bc.appendFromMiner(temp);
                 } else {
                     Block temp = new Block(null, bc.getRequiredZeros());
                     temp.setMinerID(Thread.currentThread().getId());
+                    addMoney(100);
                     bc.appendFromMiner(temp);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Add a specific amount of money to the current miner
+     * @param amount of money
+     */
+    public void addMoney(long amount) {
+        this.money += amount;
     }
 }
