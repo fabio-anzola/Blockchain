@@ -12,6 +12,12 @@ import java.util.List;
 public class Blockchain implements Serializable {
 
     /**
+     * current messages
+     */
+    public ArrayList<String> messageCache;
+
+
+    /**
      * The VID for Serialization
      */
     private static final long serialVersionUID = 1L;
@@ -37,6 +43,7 @@ public class Blockchain implements Serializable {
         //    this.chain = ((Blockchain) Objects.requireNonNull(deserialize("resources/blockchain.file"))).chain;
         //}
         this.requiredZeros = 0;
+        this.messageCache = new ArrayList<>();
     }
 
     /**
@@ -126,7 +133,9 @@ public class Blockchain implements Serializable {
         if (block.getId() != this.getLastID() && block.getId() > this.getLastID()) {
             Blockchain temp = this;
             if (temp.validate()) {
+                block.setMessages(messageCache);
                 this.appendBlock(block);
+                messageCache.clear();
                 regulateDifficulty();
                 System.out.println(block);
             }

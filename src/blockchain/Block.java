@@ -1,6 +1,7 @@
 package blockchain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
@@ -10,6 +11,11 @@ import java.util.Random;
  * @author fabioanzola richardkrikler tobiasrigler
  */
 public class Block implements Serializable {
+
+    /**
+     * messages of the block
+     */
+    private String messages;
 
     /**
      * The difficulty state
@@ -55,6 +61,7 @@ public class Block implements Serializable {
      * Constructor for creating a Block with specified Number of zeros
      */
     public Block(Block previousBlock, int requiredZeros) {
+        this.messages = "";
         long startTime = System.currentTimeMillis();
         this.timestamp = new Date().getTime();
         if (previousBlock == null) {
@@ -124,6 +131,8 @@ public class Block implements Serializable {
         s += "Magic number: " + this.magicNumber + "\n";
         s += "Hash of the previous block: \n" + this.previousHash + "\n";
         s += "Hash of the block: \n" + hash + "\n";
+        s += "Block data: \n";
+        s += messages;
         s += "Block was generating for " + this.generatingTime + " seconds" + "\n";
         s += this.difficultyState + "\n";
         return s;
@@ -156,4 +165,12 @@ public class Block implements Serializable {
         this.difficultyState = difficultyState;
     }
 
+    /**
+     * @param messages sets messages to block
+     */
+    public void setMessages(ArrayList<String> messages) {
+        for (String message: messages) {
+            this.messages += message + "\n";
+        }
+    }
 }
