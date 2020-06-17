@@ -15,6 +15,9 @@ public class Miner extends Thread {
      */
     private final Blockchain bc;
 
+    /**
+     * Store the amount of money of a Miner
+     */
     private long money;
 
     /**
@@ -59,6 +62,10 @@ public class Miner extends Thread {
         }
     }
 
+    /**
+     * Add a specific amount of money to the current miner
+     * @param amount of money
+     */
     public void addMoney(long amount) {
         this.money += amount;
     }

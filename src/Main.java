@@ -8,10 +8,13 @@ public class Main {
         Blockchain bc = new Blockchain();
         Scanner sc = new Scanner(System.in);
         new Miner(bc).start();
-        bc.messageCache.add("miner13 sent 10 VC to Bob");
-        bc.messageCache.add("miner13 sent 10 VC to Carshop");
-        while (bc.getSize() < 15) {
+        while (true) {
+            bc.messageCache.add(sc.nextLine());
         }
-        System.exit(0);
+//        bc.messageCache.add("miner13 sent 10 VC to Bob");
+//        bc.messageCache.add("miner13 sent 10 VC to Carshop");
+//        while (bc.getSize() < 15) {
+//        }
+//        System.exit(0);
     }
 }
