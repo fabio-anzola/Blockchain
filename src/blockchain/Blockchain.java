@@ -2,6 +2,7 @@ package blockchain;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -10,6 +11,8 @@ import java.util.List;
  * @author fabioanzola richardkrikler tobiasrigler
  */
 public class Blockchain implements Serializable {
+
+    public volatile ArrayList messageCache;
 
     //TODO field for message cache
 
@@ -45,6 +48,7 @@ public class Blockchain implements Serializable {
         //    this.chain = ((Blockchain) Objects.requireNonNull(deserialize("resources/blockchain.file"))).chain;
         //}
         this.requiredZeros = 0;
+        this.messageCache = new ArrayList<String>();
     }
 
     /**
@@ -134,6 +138,9 @@ public class Blockchain implements Serializable {
         if (block.getId() != this.getLastID() && block.getId() > this.getLastID()) {
             Blockchain temp = this;
             if (temp.validate()) {
+                block.setMessages(messageCache);
+                System.out.println("Arrays.toString(block.getMessages()) = " + block.getMessages());
+                messageCache.clear();
                 this.appendBlock(block);
                 regulateDifficulty();
                 System.out.println(block);

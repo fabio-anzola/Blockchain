@@ -1,6 +1,7 @@
 package blockchain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
@@ -11,6 +12,7 @@ import java.util.Random;
  */
 public class Block implements Serializable {
 
+    private ArrayList<String> messages;
     //TODO field for messages
 
     //TODO Javadoc
@@ -128,6 +130,10 @@ public class Block implements Serializable {
         s += "Magic number: " + this.magicNumber + "\n";
         s += "Hash of the previous block: \n" + this.previousHash + "\n";
         s += "Hash of the block: \n" + hash + "\n";
+        s += "Block data: \n";
+        for (String message : messages) {
+            s += message + "\n";
+        }
         s += "Block was generating for " + this.generatingTime + " seconds" + "\n";
         s += this.difficultyState + "\n";
         return s;
@@ -160,4 +166,11 @@ public class Block implements Serializable {
         this.difficultyState = difficultyState;
     }
 
+    public ArrayList<String> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(ArrayList<String> messages) {
+        this.messages = messages;
+    }
 }
