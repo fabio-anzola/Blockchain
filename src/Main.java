@@ -12,7 +12,6 @@ public class Main {
         }
         while (true) {
             bc.messageCache.add(sc.nextLine());
-            System.out.println("now");
         }
     }
 }

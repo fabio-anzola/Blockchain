@@ -12,10 +12,10 @@ import java.util.Random;
  */
 public class Block implements Serializable {
 
-    private ArrayList<String> messages;
-    //TODO field for messages
-
-    //TODO Javadoc
+    /**
+     * messages of the block
+     */
+    private String messages;
 
     /**
      * The difficulty state
@@ -61,6 +61,7 @@ public class Block implements Serializable {
      * Constructor for creating a Block with specified Number of zeros
      */
     public Block(Block previousBlock, int requiredZeros) {
+        this.messages = "";
         long startTime = System.currentTimeMillis();
         this.timestamp = new Date().getTime();
         if (previousBlock == null) {
@@ -131,9 +132,7 @@ public class Block implements Serializable {
         s += "Hash of the previous block: \n" + this.previousHash + "\n";
         s += "Hash of the block: \n" + hash + "\n";
         s += "Block data: \n";
-        for (String message : messages) {
-            s += message + "\n";
-        }
+        s += messages;
         s += "Block was generating for " + this.generatingTime + " seconds" + "\n";
         s += this.difficultyState + "\n";
         return s;
@@ -166,11 +165,12 @@ public class Block implements Serializable {
         this.difficultyState = difficultyState;
     }
 
-    public ArrayList<String> getMessages() {
-        return messages;
-    }
-
+    /**
+     * @param messages sets messages to block
+     */
     public void setMessages(ArrayList<String> messages) {
-        this.messages = messages;
+        for (String message: messages) {
+            this.messages += message + "\n";
+        }
     }
 }
